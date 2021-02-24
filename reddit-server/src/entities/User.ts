@@ -4,10 +4,13 @@ import { BaseEntity } from "./BaseEntity";
 
 @ObjectType()
 @Entity()
-export class Post extends BaseEntity {
+export class User extends BaseEntity {
 
     @Field()
+    @Property({type: 'text', unique: true})
+    username!: string;
+
     @Property({type: 'text'})
-    title!: string;
+    password!: string;
 
 }
