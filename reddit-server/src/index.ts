@@ -9,6 +9,7 @@ import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import connectRedis from "connect-redis";
+import cors from "cors";
 
 import redis from "redis";
 import session from "express-session";
@@ -27,6 +28,12 @@ const main = async () => {
     password: "redis",
   });
 
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
   app.use(
     session({
       name: "qid",
@@ -54,7 +61,12 @@ const main = async () => {
     context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: false /*"http://localhost:3000"*/,
+    },
+  });
 
   app.listen(4000, () => {
     console.log("Server started on localhost:4000.");
