@@ -69,8 +69,8 @@ const main = async () => {
     },
   });
 
-  app.listen(4000, () => {
-    console.log("Server started on localhost:4000.");
+  app.listen(4001, () => {
+    console.log("Server started on localhost:4001.");
   });
 };
 
