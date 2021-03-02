@@ -15,8 +15,11 @@ import { COOKIE_NAME } from "./constants";
 import redis from "redis";
 import session from "express-session";
 import { MyContext } from "./types";
+//import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
+  //sendEmail("blackheal@gmail.com", "<b>Hello noob!!!</b>");
+
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
 
