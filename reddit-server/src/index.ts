@@ -12,21 +12,23 @@ import connectRedis from "connect-redis";
 import cors from "cors";
 import { COOKIE_NAME } from "./constants";
 
-import redis from "redis";
+import Redis from "ioredis";
 import session from "express-session";
 import { MyContext } from "./types";
+//import { User } from "./entities/User";
 //import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
   //sendEmail("blackheal@gmail.com", "<b>Hello noob!!!</b>");
 
   const orm = await MikroORM.init(microConfig);
+  //await orm.em.nativeDelete(User, {});
   await orm.getMigrator().up();
 
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redisClient = redis.createClient({
+  const redis = new Redis({
     host: "localhost",
     port: 6379,
     password: "redis",
@@ -42,7 +44,7 @@ const main = async () => {
     session({
       name: COOKIE_NAME,
       store: new RedisStore({
-        client: redisClient,
+        client: redis,
         disableTouch: true,
       }),
       cookie: {
@@ -62,7 +64,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
+    context: ({ req, res }): MyContext => ({ em: orm.em, req, res, redis }),
   });
 
   apolloServer.applyMiddleware({

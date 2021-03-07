@@ -1,4 +1,4 @@
-import { Button, Box } from "@chakra-ui/react";
+import { Button, Box, Link, Flex } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React from "react";
 import { InputField } from "../components/InputField";
@@ -8,6 +8,7 @@ import { Wrapper } from "./Wrapper";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../util/createUrqlClient";
+import NextLink from "next/link";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -15,9 +16,9 @@ const Login: React.FC<{}> = ({}) => {
   return (
     <Wrapper variant="small">
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({ options: values });
+          const response = await login(values);
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user) {
@@ -29,9 +30,9 @@ const Login: React.FC<{}> = ({}) => {
           <Form>
             <Box mt={4}>
               <InputField
-                name="username"
-                placeholder="username..."
-                label="UserName"
+                name="usernameOrEmail"
+                placeholder="username or email..."
+                label="Username or email"
               ></InputField>
             </Box>
             <Box mt={4}>
@@ -42,6 +43,11 @@ const Login: React.FC<{}> = ({}) => {
                 type="password"
               ></InputField>
             </Box>
+            <Flex mt={2}>
+              <NextLink href="/forgot-password">
+                <Link ml="auto">Forgot Password?</Link>
+              </NextLink>
+            </Flex>
             <Button
               mt={4}
               type="submit"
